@@ -32,7 +32,7 @@ jobscript
     # and write the output into my_output_file
     srun -n 1 ./hello.out > hello_output    
 
-Lectures ######################################################################
+Module1 ########################################################################
 
 benchmarks
     Slides discuss some scientific problems often used to bench clusters.
@@ -80,3 +80,92 @@ vectorization // good
         -2 doubles.
     -For g++, use "-O2 -ftree-vectorize" or simply "-O3".
     -To check, use "-fopt-info-vec -fopt-info-vec-missed".
+
+Module2 ########################################################################
+
+discussing speed-up
+    -For parallel applications, speedup is defined as T_1/T_n.
+     T_1 is time using one core etc.
+    -Speedup CAN be greater then 1 (superlinear) in certain case.
+    -Amdahl's law.
+Moore's law and speed-up
+    Usually cast as X doubles every 18-24 months.
+        X:  Computer performance
+            CPU Clock speed
+            The number of transitors per chip at constant cost
+
+    (end of) Dennard scaling
+        -Explains why clock speeds have not increased with shrinking transistors.
+        -As transistors get smaller, power density increases because these don't
+         scale with size --> creating of a "power wall" (since ~2006).
+threads
+    A thread is a basic unit of processor utilization.
+  
+        -Within a process, all memory shared.
+        -Each "thread" executes "normal" code.
+
+        Can be:
+            -Library-based (invoke a routine in a separate thread) (pthreads).
+            -Separate enhancements to existing languages (OpenMP, CUDA).
+            -Within the language itself (Java, C11).
+
+        How to fix synchronization issues:
+            -Need to impose order of memory updates
+                -OpenMP has FLUSH
+                -Memory barriers
+
+            -Often, need to ensure updates happen atomically (all or nothing).
+
+        Limits to performance
+            -Threads SHARE memory resources.
+            -Therefore, performance is roughly linear until bandwith is saturated.
+
+OpenMP
+    Open Multi-Processing (OpenMP) is an API that supports shared-memory
+    multiprocessing programming in C, C++, and Fortran.
+    -OpenMP is mostly a compiler technology.
+    -OpenMP directives are issued to the compiler using "#pragma".
+
+    OpenMP library                  #include <omp.h>
+        modify/check #threads       omp_set_num_threads()
+                                    omp_get_thread_num()
+                                    omp_get_num_threads()
+                                    omp_get_max_threads()
+        check if in parallel        omp_in_parallel()
+        dynamically vary #threads   omp_set_dynamic()
+                                    omp_get_dynamic()
+        check #processes            omp_num_procs()
+
+    environment variables (bash)
+        Set default #threads    OMP_NUM_THREADS     int_literal 
+        Set process binding     OMP_PROC_BIND       true | false
+        Control loop iters      OMP_SCHEDULE        schedule [chunk_size]
+
+        To set an env var       export <var> = <val>            
+
+    ---------------------------------------------------------------------------
+
+    syntax
+        -Mostly compiler directives (#pragma omp ... [clause]).
+        -Some functions and types (#include <omp.h>).
+        -Most apply to a block of code.
+    
+    details
+        -We can either execute general parallel regions or parallel loops.
+        -Special case for loops.
+        -Several ways to manage thread coordination, including:
+            -Maste regions
+            -Locks
+        -Memory model for share data
+            -Flush
+    
+    parallel_region
+        # pragma omp parallel
+        {
+            // ... code executed by each thread.
+        }
+
+        -Effectivel a "fork" at the beginning and a "join" at the end.
+        -Variables allocated before entering the parallel region are shared.
+
+    reduction
