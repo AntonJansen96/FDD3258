@@ -1,0 +1,82 @@
+Organizational ################################################################
+
+login
+    kinit --forwardable ajansen@NADA.KTH.SE         # Create Kerberos ticket.
+    ssh -X ajansen@beskow.pdc.kth.se                # Login.
+data
+    Two file systems: AFS (Andrew File System) and Lustre.
+    You login to AFS, but all files for Beskow should be stored on Lustre.
+
+    Upon login, you are at:     /afs/pdc.kth.se/home/a/ajansen
+                                Store backups of important files here.
+    
+    FS avail to compute nodes:  /cfs/klemming/nobackup/a/ajansen
+                                /cfs/klemming/scratch/a/ajansen     (temp)
+compiling/running
+    salloc --nodes=1 -t 01:00:00 -A main.cc     # allocate interactive node.
+    srun -n 1 ./main                            # launch program on said node.
+
+jobscript
+    #!/bin/bash
+
+    # The name of the script is myjob
+    #SBATCH -J myjob
+    # Only 1 hour wall-clock time will be given to this job
+    #SBATCH -t 1:00:00
+    #SBATCH -A edu20.FDD3258
+    # Number of nodes
+    #SBATCH --nodes=1
+    #SBATCH -e error_file.e
+
+    # Run the executable file 
+    # and write the output into my_output_file
+    srun -n 1 ./hello.out > hello_output    
+
+Lectures ######################################################################
+
+benchmarks
+    Slides discuss some scientific problems often used to bench clusters.
+    Not relevant to me.
+modeling sparse matrix-vectory multiplication
+    Clock rate-based performance analysis often not useful.
+    Cache design important.
+    Still nothing really relevant.
+more on cache memories
+    Cache memory contains a copy of the main memory data.
+    Cache memory is faster but consumes more space and power.
+    Cache items are accessed by their address in main memory.
+
+    memory locality
+        L1      few cycles
+        L2      ~ 10 cycles
+        RAM     ~ 250 cycles
+        Remote  ~2500-5000 cycles
+
+    Data moves between RAM and cache in groups (chunks) called CACHE LINES.
+    Size typically 64-128 bytes.
+measuring performance
+    All about clocks a la my C++ class.
+matrix transpose
+    Example of cache related performance effects using a matrix transpose.
+
+more on caches II and III (optional)
+    If a load/store from CPU cannot be satisfied from cache, a CACHE MISS occurs.
+
+    1.  compulsory      on first access to a cache, block must be brought into 
+                        cache (also called a cold start or first reference miss).
+    2.  capacity        occur because lines are being discarded.
+    3.  conflict        several lines are mapped to the same set (collision miss).
+
+    Cache misses can be monitored using the perf tool.
+    Perf is a performance monitoring and analyzing tool in linux.
+    
+instruction execution and pipelining
+    About pipelining (concurrent execution of instructions)
+
+vectorization // good
+    -Vectorization is a compiler optimization, making use of CPU parallelism.
+    -Vectors operator on 128 bit (16 byte) operands:
+        -4 floats/ints.
+        -2 doubles.
+    -For g++, use "-O2 -ftree-vectorize" or simply "-O3".
+    -To check, use "-fopt-info-vec -fopt-info-vec-missed".
