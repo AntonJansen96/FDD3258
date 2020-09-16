@@ -122,50 +122,97 @@ threads
 
 OpenMP
     Open Multi-Processing (OpenMP) is an API that supports shared-memory
-    multiprocessing programming in C, C++, and Fortran.
-    -OpenMP is mostly a compiler technology.
-    -OpenMP directives are issued to the compiler using "#pragma".
-
-    OpenMP library                  #include <omp.h>
-        modify/check #threads       omp_set_num_threads()
-                                    omp_get_thread_num()
-                                    omp_get_num_threads()
-                                    omp_get_max_threads()
-        check if in parallel        omp_in_parallel()
-        dynamically vary #threads   omp_set_dynamic()
-                                    omp_get_dynamic()
-        check #processes            omp_num_procs()
-
-    environment variables (bash)
-        Set default #threads    OMP_NUM_THREADS     int_literal 
-        Set process binding     OMP_PROC_BIND       true | false
-        Control loop iters      OMP_SCHEDULE        schedule [chunk_size]
-
-        To set an env var       export <var> = <val>            
-
-    ---------------------------------------------------------------------------
-
-    syntax
-        -Mostly compiler directives (#pragma omp ... [clause]).
-        -Some functions and types (#include <omp.h>).
-        -Most apply to a block of code.
+    multiprocessing programming in C/C++. It is mostly a compiler technology.
     
-    details
-        -We can either execute general parallel regions or parallel loops.
-        -Special case for loops.
-        -Several ways to manage thread coordination, including:
-            -Maste regions
-            -Locks
-        -Memory model for share data
-            -Flush
-    
-    parallel_region
-        # pragma omp parallel
+    library functions (#include <omp.h>)
+        omp_set_num_threads()           modify/check threads
+        omp_get_thread_num()            modify/check threads
+        omp_get_num_threads()           modify/check threads
+        omp_get_max_threads()           modify/check threads
+        omp_in_parallel()               check if in parallel
+        omp_set_dynamic()               dynamically vary #threads
+        omp_get_dynamic()               dynamically vary #threads
+        omp_num_procs()                 check #processes
+
+    environment variables (bash)        
+        OMP_NUM_THREADS                 set default #threads
+        OMP_PROC_BIND                   set process binding true | false
+        OMP_SCHEDULE                    Control oop iterations
+        export <var> = <val>            To set an env var (in bash)
+
+    parallel_regions
+        #pragma omp parallel
         {
-            // ... code executed by each thread.
+            // ... code executed by each thread
+            
+            #pragma omp [master | single]   // optional
+            {
+                // ... code only executed by ONE thread in parallel
+            }                    
         }
 
-        -Effectivel a "fork" at the beginning and a "join" at the end.
-        -Variables allocated before entering the parallel region are shared.
+        -Use "private" clause to create thread-private versions of globals.
+        -Loop index variables of parallel loops are private by default.
 
-    reduction
+    parallel_loops
+        #pragma omp parallel            #pragma omp parallel for
+        {                               {
+            #pragma omp for                 // ... loop
+            {                           }
+                // ... loop
+            }
+        }
+
+        scheduling
+            The OpenMP runtime decides how the loop iterations are scheduled.
+            
+            static      Defined at compile-time.
+            dynamic     Defined at run-time.
+            guided      Special case of dynamic. Attempts to reduce overhead.
+
+            #pragma omp parallel for schedule(kind[,chunksize])
+            {
+                // ... loop
+            }
+
+        reductions
+            If a e.g. a parallel sum is performed, all threads will access the sum.
+            However, addition is not ATOMIC, meaning we can have RACE CONDITIONS.
+            This problem can be prvented by using reductions: you indicate that a
+            variable is used for a "reduction" with a particular operator.
+
+            #pragma omp parallel for reduction(+, sum)
+            {
+                for (int i = 0; i != j; ++i)
+                    sum += a[i] * b[i]
+            }
+
+    atomic updates
+        A way of coordinating access to shared values.
+        
+        #pragma omp atomic
+        {
+            // Only one threat AT A TIME can execute the following
+            // STATEMENT (not block).
+        }
+
+        #pragma omp critical
+        {
+            // Only one thread at a time can execute the following BLOCK.
+        }
+
+        Critical sections are costly because they often require reading/writing
+        to memory, and threads serialize when they are waiting for the "unlock".
+        This serialization overhead will be proportional to #threads.
+        Solution:   -Always try to remove dependency between shared variables.
+                    --> Use a temporary array indexed by thread number to hold
+                        the values found by each thread!
+
+    false_sharing
+        False sharing is an undesirable low-level sharing of variables due to
+        multiple threads writing on the same chache line, causing unnecessary
+        cache-misses. This can be prevented by:
+
+        -Storing a thread-local result and only updating AFTER computation is done.
+        -Spacing contigous shared memory blocks (padding).
+         (e.g. typedef struct {double val, int loc; char pad[128];} tvals)
