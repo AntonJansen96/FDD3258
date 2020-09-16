@@ -1,5 +1,5 @@
 CXX := g++
-CXXFLAGS += -std=c++17 -Wall -fopenmp
+CXXFLAGS += -std=c++17 -fopenmp
 
 LIBSRCS = $(filter-out main.cc,$(shell find -name \*.cc))
 
