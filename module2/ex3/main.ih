@@ -1,0 +1,64 @@
+#include "stopwatch.h"
+#include <omp.h>
+#include <math.h>
+#include <vector>
+#include <iostream>
+#include <iomanip>
+
+#define listSize 1'000'000
+#define randMax static_cast<double>(RAND_MAX)
+
+// Compute mean.
+double compMean(std::vector<double> const &input);
+
+// Compute standard deviation.
+double compSdev(std::vector<double> const &input);
+
+// Generate vector of size "size" filled with random doubles [0;1].
+std::vector<double> genRandList(int size);
+
+// Serial implementation.
+double serial();
+
+// Naive parallel implementation (has racing condition).
+double naive(int nThreads = omp_get_max_threads());
+
+// Parallel implementation using critical to prevent racing.
+double critical(int nThreads = omp_get_max_threads());
+
+// Use shared temporary array.
+double shared(int nThreads = omp_get_max_threads());
+
+// Use shared temporary array and padding.
+double padded(int nThreads = omp_get_max_threads());
+
+// For create table.
+struct Table
+{
+    bool d_header = false;
+    
+    // Prints description, cores, and computes+prints mean and sdev.
+    void print
+    (
+        std::vector<double> const &timeList, 
+        std::string const &name, 
+        int cores
+    )
+    {
+        if (not d_header)   // Only print this at the beginning of table.
+        {
+            std::cout << std::setw(13) << std::left << "name"
+                      << std::setw(6)  << std::left << "cores"
+                      << std::setw(10) << std::left << "mean (s)"
+                      << std::left << "sigma (s)" << '\n';
+                      
+            d_header = true;
+        }
+
+        std::cout << std::setprecision(3)
+                  << std::setw(15) << std::left << name
+                  << std::setw(4)  << std::left << cores
+                  << std::setw(10) << std::left << compMean(timeList)
+                  << std::setw(10) << std::left << compSdev(timeList) << '\n';
+    }
+};
