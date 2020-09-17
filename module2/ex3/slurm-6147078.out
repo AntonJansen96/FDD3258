@@ -1,0 +1,41 @@
+g++  -std=c++17 -fopenmp -c -o main.o main.cc
+g++  -std=c++17 -fopenmp -c -o serial.o serial.cc
+g++  -std=c++17 -fopenmp -c -o naive.o naive.cc
+g++  -std=c++17 -fopenmp -c -o mean.o mean.cc
+g++  -std=c++17 -fopenmp -c -o padded.o padded.cc
+g++  -std=c++17 -fopenmp -c -o critical.o critical.cc
+g++  -std=c++17 -fopenmp -c -o genrandlist.o genrandlist.cc
+g++  -std=c++17 -fopenmp -c -o sdev.o sdev.cc
+g++  -std=c++17 -fopenmp -c -o shared.o shared.cc
+ar rcs libproject.a serial.o naive.o mean.o main.o padded.o critical.o genrandlist.o sdev.o shared.o
+g++  -std=c++17 -fopenmp  -L. -o main main.o -l project
+name         cores mean (s)  sigma (s)
+serial         1   0.00281   3.83e-05  
+para_naive     32  0.000373  0.000149  
+para_critical  1   0.0148    9.36e-05  
+para_critical  2   0.0406    0.00461   
+para_critical  4   0.0615    0.00134   
+para_critical  8   0.0965    0.00222   
+para_critical  16  0.153     0.00655   
+para_critical  20  0.212     0.00643   
+para_critical  24  0.228     0.00627   
+para_critical  28  0.238     0.00617   
+para_critical  32  0.26      0.00399   
+para_shared    1   0.00521   1.52e-05  
+para_shared    2   0.00292   0.000113  
+para_shared    4   0.00157   0.000105  
+para_shared    8   0.000938  0.000101  
+para_shared    16  0.000653  8.7e-05   
+para_shared    20  0.00057   8.27e-05  
+para_shared    24  0.000515  7.95e-05  
+para_shared    28  0.000489  7.49e-05  
+para_shared    32  0.000464  7.85e-05  
+para_padded    1   0.0053    1.23e-05  
+para_padded    2   0.00296   0.000106  
+para_padded    4   0.00157   0.000107  
+para_padded    8   0.000967  0.000117  
+para_padded    16  0.000621  9.35e-05  
+para_padded    20  0.000571  8.43e-05  
+para_padded    24  0.000517  8.35e-05  
+para_padded    28  0.000462  8.09e-05  
+para_padded    32  0.000462  7.67e-05  
