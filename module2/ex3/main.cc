@@ -5,7 +5,7 @@ int main()
     srand(std::chrono::system_clock::now().time_since_epoch().count());
 
     // Parameters:
-    int const repeats = 10;
+    int const repeats = 1'000;
     std::vector<int> const threadList = {1, 2, 4, 8, 16, 20, 24, 28, 32};
 
     // Initialize timelist of size repeats.
