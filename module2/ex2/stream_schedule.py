@@ -12,3 +12,17 @@ bandwidth_std = np.std(bandwidth, axis=1)
 print(schedules)
 print(bandwidth_avg)
 print(bandwidth_std)
+
+fig, ax = plt.subplots()
+ax.bar(np.arange(len(schedules)), bandwidth_avg,
+       yerr=bandwidth_std,
+       align='center',
+       alpha=0.5,
+       ecolor='black',
+       capsize=15)
+ax.set_xticks(np.arange(len(schedules)))
+ax.set_xticklabels(schedules, fontsize=20.0)
+ax.yaxis.set_tick_params(labelsize=20.0)
+ax.set_title('STREAM copy kernel schedule bandwith test', fontsize=20.0)
+ax.yaxis.grid(True)
+plt.show()
