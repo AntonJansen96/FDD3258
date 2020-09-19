@@ -8,6 +8,9 @@ OPTIMIZATION = -g -O2
 PARALLEL = -fopenmp
 MATH_LIB = -lm
 
+# Parallel computing options
+N=10000
+
 EXEC = DFTW
 SRC = DFTW_mod.c 
 OBJS = $(SRC: .c = .o)
@@ -19,7 +22,7 @@ OBJS = $(SRC: .c = .o)
 all: $(EXEC)
 
 $(EXEC): $(OBJS)
-	$(CXX) $(WARNINGS) $(PARALLEL) $(OPTIMIZATION) $^ -o $@ $(MATH_LIB)
+	$(CXX) -DSIZE=$(N) $(WARNINGS) $(PARALLEL) $(OPTIMIZATION) $^ -o $@ $(MATH_LIB)
 
 clean:
 	$(RM) $(EXEC)

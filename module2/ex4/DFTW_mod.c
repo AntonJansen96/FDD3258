@@ -46,6 +46,15 @@ int printResults(double* xr, double* xi, int N);
 int main(int argc, char* argv[])
 {
 	
+	/*
+	 * 	Checking the predefined number of threads
+	 */
+	#pragma omp parallel 
+	{
+		int n_threads = omp_get_num_threads();
+		#pragma omp master
+			printf("[OMP] Number of threads = %d\n", n_threads);
+	}
 	// Size of input array
   	int N = SIZE;
   	printf("DFTW calculation with N = %d \n",N);
@@ -105,6 +114,7 @@ int DFT(int idft, double* xr, double* xi, double* Xr_o, double* Xi_o, int N)
 	 */
 	for (int k=0 ; k<N ; k++)
 	{
+		#pragma omp parallel for reduction(+:Xr_o[k],Xi_o[k]) schedule(runtime) 
 		for (int n=0 ; n<N ; n++)
 		{
 	        	// Real part of X[k]
