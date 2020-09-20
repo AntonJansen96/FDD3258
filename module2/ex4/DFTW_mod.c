@@ -114,7 +114,7 @@ int DFT(int idft, double* xr, double* xi, double* Xr_o, double* Xi_o, int N)
 	 */
 	for (int k=0 ; k<N ; k++)
 	{
-		#pragma omp parallel for reduction(+:Xr_o[k],Xi_o[k]) schedule(runtime) 
+		#pragma omp parallel for reduction(+:Xr_o[k],Xi_o[k]) schedule(static) 
 		for (int n=0 ; n<N ; n++)
 		{
 	        	// Real part of X[k]
@@ -127,7 +127,7 @@ int DFT(int idft, double* xr, double* xi, double* Xr_o, double* Xi_o, int N)
 	// Normalize if you are doing IDFT
 	if (idft==-1)
 	{	
-		#pragma omp parallel for schedule(runtime)
+		#pragma omp parallel for schedule(static)
 		for (int n=0 ; n<N ; n++)
 		{
 	    		Xr_o[n] /=N;
