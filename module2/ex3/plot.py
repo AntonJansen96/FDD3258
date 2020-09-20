@@ -66,7 +66,7 @@ plt.hlines(serialM[0], 0, 32, label="serial = 2.81e-3 (s)", color='r')
 
 plt.yscale("log")
 plt.axis([0, 33, 0, 0.27])
-plt.xlabel("Cores")
+plt.xlabel("Number of threads")
 plt.ylabel("Mean execution time (s)")
 plt.grid(True)
 plt.legend(loc=[0.5, 0.5])
