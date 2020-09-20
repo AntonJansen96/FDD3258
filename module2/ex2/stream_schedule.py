@@ -19,10 +19,10 @@ ax.bar(np.arange(len(schedules)), bandwidth_avg,
        align='center',
        alpha=0.5,
        ecolor='black',
-       capsize=15)
+       error_kw=dict(lw=5, capsize=25, capthick=3))
 ax.set_xticks(np.arange(len(schedules)))
-ax.set_xticklabels(schedules, fontsize=20.0)
-ax.yaxis.set_tick_params(labelsize=20.0)
-ax.set_title('STREAM copy kernel schedule bandwith test', fontsize=20.0)
+ax.set_xticklabels(schedules, fontsize=30.0)
+ax.yaxis.set_tick_params(labelsize=30.0)
+ax.set_title('STREAM copy kernel schedule bandwith test', fontsize=30.0)
 ax.yaxis.grid(True)
 plt.show()

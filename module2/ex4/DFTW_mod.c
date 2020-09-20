@@ -39,7 +39,7 @@ int fillInput(double* xr, double* xi, int N);
 // Set to zero the input vector
 int setOutputZero(double* Xr_o, double* Xi_o, int N);
 // Check if x = IDFT(DFT(x))
-int checkResults(double* xr, double* xi, double* xr_check, double* xi_check, double* Xr_o, double* Xi_r, int N);
+int checkResults(double* xr, double* xi, double* xr_check, double* xi_check, double* Xr_o, double* Xi_o, int N);
 //PPrint the results of the DFT
 int printResults(double* xr, double* xi, int N);
 
@@ -126,7 +126,8 @@ int DFT(int idft, double* xr, double* xi, double* Xr_o, double* Xi_o, int N)
 	
 	// Normalize if you are doing IDFT
 	if (idft==-1)
-	{
+	{	
+		#pragma omp parallel for schedule(runtime)
 		for (int n=0 ; n<N ; n++)
 		{
 	    		Xr_o[n] /=N;
@@ -175,7 +176,7 @@ int setOutputZero(double* Xr_o, double* Xi_o, int N)
 }
 
 // Check if x = IDFT(DFT(x))
-int checkResults(double* xr, double* xi, double* xr_check, double* xi_check, double* Xr_o, double* Xi_r, int N)
+int checkResults(double* xr, double* xi, double* xr_check, double* xi_check, double* Xr_o, double* Xi_o, int N)
 {
 	
 	// x[0] and x[1] have typical rounding error problem
@@ -188,6 +189,10 @@ int checkResults(double* xr, double* xi, double* xr_check, double* xi_check, dou
 		    printf("ERROR - x[%d] = %f, inv(X)[%d]=%f \n",n,xi[n], n,xi_check[n]);
 	}
 	printf("Xre[0] = %f \n",Xr_o[0]);
+	/*
+	 *	To be sure reduction is working on both variables
+	 */
+	printf("Xim[0] = %f \n",Xi_o[0]);
 
 	return 1;
 
