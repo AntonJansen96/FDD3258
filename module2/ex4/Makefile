@@ -12,7 +12,8 @@ MATH_LIB = -lm
 N=10000
 
 EXEC = DFTW
-SRC = DFTW_mod.c 
+# SRC = DFTW_mod.c 
+SRC = DFTW_fin.c
 OBJS = $(SRC: .c = .o)
 
 .DEFAULT_GOAL = all
