@@ -57,21 +57,25 @@ int main()
         	}
     	}
 
-	int count_mpi = count;
+	// Estimate Pi and display the result
+    	pi = ((double)count / (double)NUM_ITER) * 4.0;
+
+	double pi_mpi = pi;
 
 	if ( rank==MASTER )
 	{
-		for (int i=1; i<size; ++i)
+		for (int i=0; i<size; ++i)
 		{
-			MPI_Recv(&count_mpi, 1, MPI_INT, i, DEFAULT_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-			count += count_mpi;
+			if ( i!=MASTER )
+			{
+				MPI_Recv(&pi_mpi, 1, MPI_DOUBLE, i, DEFAULT_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+				pi += pi_mpi;
+			}
 		}
 	}
 	else
-		MPI_Send(&count_mpi, 1, MPI_INT, MASTER, DEFAULT_TAG, MPI_COMM_WORLD);
-    
-    	// Estimate Pi and display the result
-    	pi = ((double)count / (double)NUM_ITER) * 4.0;
+		MPI_Send(&pi_mpi, 1, MPI_INT, MASTER, DEFAULT_TAG, MPI_COMM_WORLD); 
+    	
     	
 	if ( rank==MASTER )
     		printf("The result is %f\n", pi);
