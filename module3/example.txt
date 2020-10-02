@@ -1,0 +1,30 @@
+// using namespace std;
+
+// int main(int argc, char **argv)
+// {
+//     int rank, size, provided;
+
+//     // Initialize MPI
+//     // All MPI programs always start with MPI_Init_thread
+//     MPI_Init_thread(&argc, &argv, MPI_THREAD_SINGLE, &provided);
+
+//     // cout << '\n'; // Newline after MAGIC COOKIE.
+
+//     // cout << "Hello World from rank ... from 4 processes!\n";
+
+//     MPI_Comm_size(MPI_COMM_WORLD, &size);   // Get how many MPI processes
+//     MPI_Comm_rank(MPI_COMM_WORLD, &rank);   // Get my rank (ID)
+
+//     // MPI_COMM_WORLD is defined by mpi.h and designates all processes in the
+//     // MPI 'job'. It is the "default communicator".
+
+//     string output = "My rank " + to_string(rank) + " of " + to_string(size) +
+//                     "\nHere are my values for A:\n";
+    
+//     for (int i = 0; i != 10; ++i)
+//         output += to_string(i * rank) + ' ';
+
+//     cout << output + "\n\n";
+
+//     MPI_Finalize(); // Finalize MPI (all MPI programs end like this).
+// }
