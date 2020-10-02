@@ -118,7 +118,7 @@ threads
 
         Limits to performance
             -Threads SHARE memory resources.
-            -Therefore, performance is roughly linear until bandwith is saturated.
+            -Therefore, performance is roughly linear until bandwidth is saturated.
 
 OpenMP
     Open Multi-Processing (OpenMP) is an API that supports shared-memory
@@ -216,3 +216,53 @@ OpenMP
         -Storing a thread-local result and only updating AFTER computation is done.
         -Spacing contigous shared memory blocks (padding).
          (e.g. typedef struct {double val, int loc; char pad[128];} tvals)
+
+Module3 ########################################################################
+
+distributed memory parallelism
+    -In MPI, memory is not shared. Therefore we need communication over network.
+     i.e. communication between different nodes.
+    -networking latency and bandwidth both important for performance.
+    -there is a whole science to this when desigining data center infrastructure
+     but not too relevant for just using MPI.
+    -T = latency + length / bandwidth = s + r * n = s + (1 / bandwidth) * n.
+    -Modern HPC systems latency ~few us, bandwidth 0.1-10 GB/s.
+
+parallel programming models for scientific computing
+    -MPI = Message-Passing Interface
+    -Standard library interface specified by MPI forum.
+    -Send(data, destination, tag, comm) in one process matches
+     Receive(data, source, tag, comm).
+
+message passing & our first MPI code
+    -MPI is a library.
+    -All operations performed with routine calls.
+
+    MPI_Comm_size()     // return number of processes
+    MPI_Comm_rank()     // return rank (0 ... n-1)
+
+    IMPORTANT
+    1. Install the MPI library
+       sudo apt install libopenmpi-dev
+
+    2. Add the <mpi.h> library header to the VScode include path.
+       CTRL + SHIFT + P >C/C++ Edit Configurations (JSON) (c_cpp_properties.json)
+       add (something like) /usr/lib/x86_64-linux-gnu/openmpi/**
+
+    3. Change your makefile: we need to compile with g++ --> mpic++.
+       (this is basically a wrapper for g++).
+
+    4. If we run the executable like this ./main it won't work properly.
+       Instead use "mpiexec -n <cores> ./main"
+       Although this does not really make sense on one local machine/node,
+       it is useful for testing stuff (although not performance).
+
+MPI basic send/receive & our second MPI code
+more on point-to-point communication
+calculate Pi wtih MPI
+MPI data types
+MPI process topology
+collective communication and computation in MPI
+More about collective communication and computation in MPI
+Performance modeling & ping-pong
+(hybrid programming with MPI)
