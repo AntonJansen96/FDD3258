@@ -1,0 +1,19 @@
+I have written the Hello World code in C++. To compile the MPI code:
+
+on local machine    mpic++
+on Beskow           CC
+
+No specific compiler flags are required.
+
+To run the MPI code:
+
+on local machine    mpiexec -n <processes> main
+on Beskow           srun -n <processes> main
+
+To change the number of MPI processes, change the value of -n when calling
+mpiexec (local) or srun (beskow).
+
+The functions used for retrieving the rank of an MPI process and the total
+number of processes are (respectively): MPI_Comm_size() and MPI_Comm_rank().
+
+The names of the most used MPI implementations are MPICH and OpenMPI.
