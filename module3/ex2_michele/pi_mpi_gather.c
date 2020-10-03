@@ -39,7 +39,7 @@ int main()
 	int local_num_iter = NUM_ITER/size;	
 
     	int count = 0;
-    	double x, y, z, pi;
+    	double x, y, z, pi_local, pi_global;
     
 	// Important: Multiply SEED by "rank" when you introduce MPI!
     	srand(SEED*rank+RNG_OFFSET);
@@ -59,28 +59,19 @@ int main()
     	}
 
 	// Estimate Pi and display the result
-    	pi = ((double)count / (double)NUM_ITER) * 4.0;
-
-	double pi_mpi = pi;
+    	pi_local = ((double)count / (double)NUM_ITER) * 4.0;
+	
+	double pi[size];
+	MPI_Gather( &pi_local, 1, MPI_DOUBLE, pi, 1, MPI_DOUBLE, MASTER, MPI_COMM_WORLD);
 
 	if ( rank==MASTER )
 	{
-		for (int i=0; i<size; ++i)
-		{
-			if ( i!=MASTER )
-			{
-				MPI_Recv(&pi_mpi, 1, MPI_DOUBLE, i, DEFAULT_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-				pi += pi_mpi;
-			}
-		}
+		pi_global = 0.0;
+		for ( int i=0; i<size; ++i )
+			pi_global += pi[i];
+    		printf("The result is %f\n", pi_global);
 	}
-	else
-		MPI_Send(&pi_mpi, 1, MPI_INT, MASTER, DEFAULT_TAG, MPI_COMM_WORLD); 
-    	
-    	
-	if ( rank==MASTER )
-    		printf("The result is %f\n", pi);
-    	
+
 	// Finalize message passing
 	MPI_Finalize();
 
