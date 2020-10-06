@@ -1,35 +1,36 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include <string.h>
+#include "stopwatch/stopwatch.h"
+
+#include <iostream>
+#include <iomanip>
+#include <chrono>
 #include <math.h>
-#include <time.h>
 
-#define SEED     921
-#define NUM_ITER 1000000000
-
-int main(int argc, char **argv)
+int main()
 {
+    int const iterMax = 1'000'000'000;
+
+    Stopwatch timer(std::to_string(iterMax) + " iterations"); // Start timer.
+
     int count = 0;
-    double x, y, z, pi;
+    double x, y;
     
-    srand(SEED); // Important: Multiply SEED by "rank" when you introduce MPI!
+    // Seed
+    srand(std::chrono::system_clock::now().time_since_epoch().count());
     
     // Calculate PI following a Monte Carlo method
-    for (int iter = 0; iter != NUM_ITER; ++iter)
-    {
-        // Generate random (X,Y) points
-        x = (double)random() / (double)RAND_MAX;
-        y = (double)random() / (double)RAND_MAX;
-        z = sqrt((x*x) + (y*y));
+    for (int iter = 0; iter != iterMax; ++iter)
+    {                       // Pick a random point.
+        x = random() / static_cast<double>(RAND_MAX);
+        y = random() / static_cast<double>(RAND_MAX);
         
-        // Check if point is in unit circle
-        if (z <= 1.0)
-            ++count;
-    }
+        if (x*x + y*y <= 1.0)   // Avoid taking std::sqrt() !!!
+            ++count;            // in this case it is not necessary + 
+    }                           // math.h functions are slow!
     
-    // Estimate Pi and display the result
-    pi = ((double)count / (double)NUM_ITER) * 4.0;
-    
-    printf("The result is %f\n", pi);
+    // Estimate Pi and display the result.
+    double const pi = (count / static_cast<double>(iterMax)) * 4.0;
+
+    std::cout << std::setprecision(10) << pi << '\n';
+
+    timer.time(); // Stop timer and display time.
 }
