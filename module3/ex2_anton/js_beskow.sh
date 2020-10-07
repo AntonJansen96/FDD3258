@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --job-name=mod3_ex2_anton
 
-#SBATCH --time 00:10:00
+#SBATCH --time 00:15:00
 #SBATCH --nodes=2
 #SBATCH -A edu20.FDD3258
 
