@@ -1,4 +1,4 @@
-CXX := mpic++
+CXX := CC
 CXXFLAGS += -std=c++17 -Wall -O3
 
 LIBSRCS = $(filter-out main.cc,$(shell find -name \*.cc))

@@ -1,0 +1,186 @@
+CC  -std=c++17 -Wall -O3 -c -o main.o main.cc
+CC  -std=c++17 -Wall -O3 -c -o serial.o serial.cc
+CC  -std=c++17 -Wall -O3 -c -o printpi.o printpi.cc
+CC  -std=c++17 -Wall -O3 -c -o reduce.o reduce.cc
+CC  -std=c++17 -Wall -O3 -c -o nonblocking.o nonblocking.cc
+CC  -std=c++17 -Wall -O3 -c -o compute.o compute.cc
+CC  -std=c++17 -Wall -O3 -c -o linear.o linear.cc
+CC  -std=c++17 -Wall -O3 -c -o gather.o gather.cc
+CC  -std=c++17 -Wall -O3 -c -o binary.o binary.cc
+ar rcs libproject.a serial.o printpi.o reduce.o main.o nonblocking.o compute.o linear.o gather.o binary.o
+CC  -std=c++17 -Wall -O3  -L. -o main main.o -l project
+processes = 8 and opmode = 1
+
+3.141597648
+
+real	0m4,794s
+user	0m0,019s
+sys	0m0,007s
+processes = 16 and opmode = 1
+
+3.141531208
+
+real	0m4,824s
+user	0m0,023s
+sys	0m0,006s
+processes = 32 and opmode = 1
+
+3.141558188
+
+real	0m4,365s
+user	0m0,019s
+sys	0m0,010s
+processes = 64 and opmode = 1
+
+3.141549376
+
+real	0m1,556s
+user	0m0,019s
+sys	0m0,011s
+processes = 128 and opmode = 1
+
+3.141593444
+
+real	0m3,741s
+user	0m0,026s
+sys	0m0,005s
+processes = 8 and opmode = 2
+
+3.141623828
+
+real	0m7,415s
+user	0m0,017s
+sys	0m0,012s
+processes = 16 and opmode = 2
+
+3.141628404
+
+real	0m5,269s
+user	0m0,018s
+sys	0m0,010s
+processes = 32 and opmode = 2
+
+3.141606248
+
+real	0m4,527s
+user	0m0,017s
+sys	0m0,012s
+processes = 64 and opmode = 2
+
+3.141603468
+
+real	0m3,367s
+user	0m0,018s
+sys	0m0,012s
+processes = 128 and opmode = 2
+
+3.14167728
+
+real	0m3,663s
+user	0m0,013s
+sys	0m0,017s
+processes = 8 and opmode = 3
+
+3.141651356
+
+real	0m4,850s
+user	0m0,014s
+sys	0m0,017s
+processes = 16 and opmode = 3
+
+3.141574776
+
+real	0m3,152s
+user	0m0,020s
+sys	0m0,008s
+processes = 32 and opmode = 3
+
+3.141615488
+
+real	0m2,011s
+user	0m0,021s
+sys	0m0,008s
+processes = 64 and opmode = 3
+
+3.141602452
+
+real	0m3,895s
+user	0m0,026s
+sys	0m0,004s
+processes = 128 and opmode = 3
+
+3.141509528
+
+real	0m1,224s
+user	0m0,028s
+sys	0m0,000s
+processes = 8 and opmode = 4
+
+3.141671664
+
+real	0m5,044s
+user	0m0,025s
+sys	0m0,005s
+processes = 16 and opmode = 4
+
+3.141595184
+
+real	0m5,254s
+user	0m0,020s
+sys	0m0,008s
+processes = 32 and opmode = 4
+
+3.141563828
+
+real	0m5,542s
+user	0m0,019s
+sys	0m0,010s
+processes = 64 and opmode = 4
+
+3.141587456
+
+real	0m1,467s
+user	0m0,026s
+sys	0m0,005s
+processes = 128 and opmode = 4
+
+3.141548148
+
+real	0m3,638s
+user	0m0,019s
+sys	0m0,010s
+processes = 8 and opmode = 5
+
+3.141618224
+
+real	0m7,020s
+user	0m0,016s
+sys	0m0,011s
+processes = 16 and opmode = 5
+
+3.141568236
+
+real	0m5,164s
+user	0m0,026s
+sys	0m0,004s
+processes = 32 and opmode = 5
+
+3.14161894
+
+real	0m1,977s
+user	0m0,017s
+sys	0m0,011s
+processes = 64 and opmode = 5
+
+3.141543252
+
+real	0m3,907s
+user	0m0,011s
+sys	0m0,018s
+processes = 128 and opmode = 5
+
+3.14154046
+
+real	0m3,674s
+user	0m0,017s
+sys	0m0,012s
