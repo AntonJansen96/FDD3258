@@ -1,4 +1,4 @@
-#include "main.ih"
+#include "main.h"
 
 // Print Pi.
 void printPi(int count, int iterMax)

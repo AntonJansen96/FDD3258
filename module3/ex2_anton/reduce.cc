@@ -1,4 +1,4 @@
-#include "main.ih"
+#include "main.h"
 
 void reduce(int argc, char **argv)
 {

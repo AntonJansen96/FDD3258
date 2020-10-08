@@ -1,4 +1,4 @@
-#include "main.ih"
+#include "main.h"
 
 // 2.1 Linear.
 void linear(int argc, char **argv)

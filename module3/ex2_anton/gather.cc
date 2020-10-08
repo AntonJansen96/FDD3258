@@ -1,4 +1,4 @@
-#include "main.ih"
+#include "main.h"
 
 void gather(int argc, char **argv)
 {

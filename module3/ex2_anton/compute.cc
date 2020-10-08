@@ -1,4 +1,4 @@
-#include "main.ih"
+#include "main.h"
 
 // Perform our Monte-Carlo calculation.
 int compute(int iterMax, int size)

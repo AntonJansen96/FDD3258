@@ -1,4 +1,4 @@
-#include "main.ih"
+#include "main.h"
 
 void binary(int argc, char **argv)
 {
