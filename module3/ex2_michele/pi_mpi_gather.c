@@ -43,7 +43,11 @@ int main()
     
 	// Important: Multiply SEED by "rank" when you introduce MPI!
     	srand(SEED*rank+RNG_OFFSET);
-    
+   
+	// Start MPI timing
+	double t1, t2, time;
+	t1 = MPI_Wtime();
+
     	// Calculate PI following a Monte Carlo method
     	for ( int iter = 0; iter < local_num_iter; iter++ )
     	{
@@ -63,6 +67,10 @@ int main()
 	
 	double pi[size];
 	MPI_Gather( &pi_local, 1, MPI_DOUBLE, pi, 1, MPI_DOUBLE, MASTER, MPI_COMM_WORLD);
+	
+	// Stop MPI timing
+	t2 = MPI_Wtime();
+	time = t2-t1;
 
 	if ( rank==MASTER )
 	{
@@ -70,6 +78,7 @@ int main()
 		for ( int i=0; i<size; ++i )
 			pi_global += pi[i];
     		printf("The result is %f\n", pi_global);
+		printf("Time = %f sec\n", time);
 	}
 
 	// Finalize message passing

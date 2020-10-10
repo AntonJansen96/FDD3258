@@ -65,6 +65,10 @@ int main()
 
 	*/
 
+	// Start MPI timing
+	double t1, t2, time;
+	t1 = MPI_Wtime();
+
 	// Nonblocking communication, optimized
     	if ( rank == 0 )
 	{
@@ -119,8 +123,17 @@ int main()
 		MPI_Send(&pi_local, 1, MPI_DOUBLE, 0, DEFAULT_TAG, MPI_COMM_WORLD);
 	}
 
+	// Stop MPI timing
+	t2 = MPI_Wtime();
+	time = t2-t1;
+
 	if ( rank==MASTER )
+	{
     		printf("The result is %f\n", pi_global);
+		printf("Time = %f sec\n", time);
+	}
+    	
+	
     	
 	// Finalize message passing
 	MPI_Finalize();
