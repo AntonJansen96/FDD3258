@@ -1,0 +1,32 @@
+2.1
+MPI_Send and MPI_Recv are called "blocking" communication because they do not
+complete until their buffers are full or empty (respectively).
+
+The MPI function for timing is MPI_Wtime().
+
+plot + measure
+
+2.2
+Linear = n-1 communications.
+
+
+As you increase the number of processes, the tree O(log n) will outperform
+the linear O(n) implementation.
+
+plot + measure
+
+2.3
+The MPI functions for non-blocking communication are MPI_Isend and MPI_Irecv.
+The I in front of the function name in non-blocking communication stands for
+"Immediately".
+
+plot + measure
+
+2.4
+The collective function MPI_Bcast() could be used to send the final pi to all
+the other processes.
+
+plot + measure
+
+2.5
+plot + measure

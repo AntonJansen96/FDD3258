@@ -36,13 +36,18 @@ int main()
 	MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   	MPI_Comm_size(MPI_COMM_WORLD, &size);
 
-	int local_num_iter = NUM_ITER/size;
+	int local_num_iter = NUM_ITER/size;	
+
     	int count = 0;
     	double x, y, z, pi;
     
 	// Important: Multiply SEED by "rank" when you introduce MPI!
     	srand(SEED*rank+RNG_OFFSET);
-    
+   
+	// Start MPI timing
+	double t1, t2, time;
+	t1 = MPI_Wtime();
+
     	// Calculate PI following a Monte Carlo method
     	for ( int iter = 0; iter < local_num_iter; iter++ )
     	{
@@ -76,9 +81,15 @@ int main()
 	else
 		MPI_Send(&pi_mpi, 1, MPI_INT, MASTER, DEFAULT_TAG, MPI_COMM_WORLD); 
     	
-    	
+    	// Stop MPI timing
+	t2 = MPI_Wtime();
+	time = t2-t1;
+
 	if ( rank==MASTER )
+	{
     		printf("The result is %f\n", pi);
+		printf("Time = %f sec\n", time);
+	}
     	
 	// Finalize message passing
 	MPI_Finalize();

@@ -36,13 +36,14 @@ int main()
 	MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   	MPI_Comm_size(MPI_COMM_WORLD, &size);
 
-	int local_num_iter = NUM_ITER/size;
+	int local_num_iter = NUM_ITER/size;	
+
     	int count = 0;
-    	double x, y, z, pi;
+    	double x, y, z, pi_local, pi_global;
     
 	// Important: Multiply SEED by "rank" when you introduce MPI!
     	srand(SEED*rank+RNG_OFFSET);
-   	
+   
 	// Start MPI timing
 	double t1, t2, time;
 	t1 = MPI_Wtime();
@@ -62,46 +63,18 @@ int main()
     	}
 
 	// Estimate Pi and display the result
-    	pi = ((double)count / (double)NUM_ITER) * 4.0;
-
-	double pi_mpi = pi;
-
-	int M = size;
-	while ( M>1 )
-	{
-
-		// DEBUG
-		/*
-		M = M/2;
-		if (rank==MASTER)
-			printf("M = %d\n", M);
-		*/
-
-		for ( int i=0; i<M; ++i )
-		{
-			if (rank==i)
-			{
-				// Recv
-				MPI_Recv(&pi_mpi, 1, MPI_DOUBLE, i+M, DEFAULT_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-				pi += pi_mpi;
-				pi_mpi = pi;
-			}
-			else if (rank==i+M)
-			{
-				// Send
-				MPI_Send(&pi_mpi, 1, MPI_INT, i, DEFAULT_TAG, MPI_COMM_WORLD);
-			}
-		}
-
-	}
+    	pi_local = ((double)count / (double)NUM_ITER) * 4.0;
+	
+	double pi[size];
+	MPI_Reduce( &pi_local, &pi_global, 1, MPI_DOUBLE, MPI_SUM, MASTER, MPI_COMM_WORLD);
 
 	// Stop MPI timing
 	t2 = MPI_Wtime();
 	time = t2-t1;
-    	
+
 	if ( rank==MASTER )
 	{
-    		printf("The result is %f\n", pi);
+		printf("The result is %f\n", pi_global);
 		printf("Time = %f sec\n", time);
 	}
 
