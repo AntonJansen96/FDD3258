@@ -2,6 +2,10 @@
 #include <stdlib.h>
 #include <mpi.h>
 
+#ifndef LOG_SIZE
+#define LOG_SIZE 27
+#endif
+
 int main(int argc, char *argv[])
 {
 	/* -------------------------------------------------------------------------------------------
@@ -29,7 +33,7 @@ int main(int argc, char *argv[])
 		Loop from 8 B to 1 GB
 	--------------------------------------------------------------------------------------------*/
 
-	for(int i=0; i<=27; i++){
+	for(int i=0; i<=LOG_SIZE; i++){
 
 		long int N = 1 << i;
 	
