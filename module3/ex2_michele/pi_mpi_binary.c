@@ -65,10 +65,13 @@ int main()
 	int M = size;
 	while ( M>1 )
 	{
+
 		// DEBUG
+		/*
 		M = M/2;
 		if (rank==MASTER)
 			printf("M = %d\n", M);
+		*/
 
 		for ( int i=0; i<M; ++i )
 		{
