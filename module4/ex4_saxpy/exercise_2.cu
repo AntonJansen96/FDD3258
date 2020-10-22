@@ -11,6 +11,11 @@
 #define TPB 256
 #endif
 
+// DEBUG
+#ifndef PRINT
+#define PRINT 0
+#endif
+
 // Returns a random float between 0 and 1
 float rand_float();
 
@@ -29,6 +34,9 @@ float l2_avg_norm(float*, float*);
 // Timing
 double cpuSecond();
 
+// For debug
+void print_vector(float*);
+
 int main()
 {
 
@@ -44,6 +52,12 @@ int main()
 	init_rand_vec(x);
 	init_rand_vec(y1);
 
+	if (PRINT)
+	{
+        	printf("\n*** Debug: print CPU init ***\n");
+        	print_vector(y1);
+	}
+
 	// Init GPU x and y vectors
 	float* x_gpu=NULL;	
 	float* y_gpu=NULL;
@@ -57,6 +71,12 @@ int main()
 	saxpy_serial_cpu(a, x, y1);
 	double cpu_time_elaps = cpuSecond() - cpu_time_start;
 	printf("\nComputing SAXPY on the CPU… Done!\nTime CPU = %fsec\n", cpu_time_elaps);
+	
+	if (PRINT)
+	{
+		printf("\n*** Debug: print CPU result ***\n");
+		print_vector(y1);
+	}
 
 	// Perform SAXPY on GPU
 	double gpu_time_start = cpuSecond();
@@ -68,6 +88,12 @@ int main()
 	// Copy back to CPU
 	float y2[ARRAY_SIZE];
 	cudaMemcpy(y2, y_gpu, ARRAY_SIZE*sizeof(float), cudaMemcpyDeviceToHost);
+
+	if (PRINT)
+        {
+        	printf("\n*** Debug: print GPU result ***\n");
+        	print_vector(y2);
+	}
 
 	cudaFree(x_gpu);
 	cudaFree(y_gpu);
@@ -100,6 +126,9 @@ __global__ void saxpyKernel(float a, float* x, float* y)
 {
 	const int i = blockIdx.x*blockDim.x + threadIdx.x;
 	y[i] += a*x[i];
+	/* Test */
+	// y[i] = i;
+	/* **** */
 }
 
 float l2_avg_norm(float* v1, float* v2)
@@ -119,4 +148,10 @@ double cpuSecond()
   	struct timeval tp;
    	gettimeofday(&tp,NULL);
    	return ((double)tp.tv_sec + (double)tp.tv_usec*1.0e-6);
+}
+
+void print_vector(float* x)
+{
+	for (int n = 0; n<ARRAY_SIZE; ++n)
+		printf("%f\n", x[n]);
 }
