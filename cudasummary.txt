@@ -1,0 +1,88 @@
+CUDA jargon
+    host   = CPU
+    device = GPU
+    Kernel = function executed on GPU (by each thread)
+    Launch = CPU instructs GPU to execute a kernel
+    Execution configuration = a definition of how many threads to run on the GPU 
+                              and how to group them
+
+workflow/memory management
+    -Create variable in CPU memory and copy from CPU --> GPU
+    -Instruct processing and execution parallel in each core
+         1. Define the function to be executed on the GPU
+         2. call the function to be executed by each thread on GPU (kernel launch).
+            we need to provide the number of threads and their grouping
+    -Move data from GPU to CPU memory
+
+    Memory allocation and deallocation
+        void cudaMalloc(void **devPtr, size_t size)
+        void cudaFree(void *devPtr)
+
+        e.g.    double *ptr = NULL;
+                cudaMalloc(&ptr, 20 * sizeof(double));
+                cudaFree(ptr);
+
+    Moving data to/from the GPU
+        cudaMemcpy(void *dest, void *source, size_t size, cudaMemcpyHostToDevice)
+        cudaMemcpy(void *dest, void *source, size_t size, cudaMemcpyDeviceToHost)
+
+        e.g.    double *a = (*double) malloc (20 * sizeof(double));
+                for (int i = 0; i < 20; ++i)
+                    a[i] = 2.0 * i;
+                
+                cudaMemcpy(gpu_a, a, 20 * sizeof(double), cudaMemcpyHostToDevice);
+                // do some computation
+                cudaMemcpy(gpu_a, a, 20 * sizeof(double), cudaMemcpyDeviceToHost);
+
+    Kernel launching
+        my_kernel <<<Dg, Db>>>(arg1, arg2, ...)
+
+        Dg = number of thread block (max 1024) (can be multiple dimensions)
+        Db = number of threads per block
+        total number of threads = Dg * Db
+        <<<Dg, Db>>> is called the execution configuration
+        
+        Thread blocks and grids are abstractions. You specify the work, the GPU
+        decides how it uses its resources (SMs, SPs).
+
+        -Basic strategy in CUDA is to oversubscribe to hide latency.
+
+    CUDA makes distinction between functions depending on who is calling and
+    where they should run. By prepending one of the following function type
+    qualifiers:
+
+    __global__  functions called from host and executed on device
+    __device__  functions called from device and executed on device
+    __host__    functions called from host and executed on host
+
+    kernels cannot return a value --> return type is always void : 
+
+    __global__ void my_kernel(...);
+
+    Kernel execution
+        To know which thread is doing what, you need to obtain the thread ID.
+        For that, we need to obtain:
+            -ID of block
+            -ID of thread
+            -perform some math to index the thread
+    
+        kernel provide four built-in variables that can be accessed during
+        kernel execution to determine your ID:
+
+        blockIdx        index of the block in the grid
+        blockIdx.x      index of block in x-direction
+        threadIdx       index of the thread within the block
+        blockDim        number of threads in each block
+        gridDim         number of blocks in the grid
+
+        threadID = blockIdx.x * blockDim.x
+    
+    Asynchronous execution
+        cudaDeviceSynchronize()     effectively synchronizes all threads in a grid -->
+                                    wait for all the threads in the kernel to complete before proceed
+        __synchTreads()             synchronizes threads within a block
+
+    CUDA specific types
+        CUDA uses the vector type uint3 for the index variables blockIdx and threadIdx
+        A uint3 variable is a vector with three unsigned integer components.
+        
