@@ -116,7 +116,7 @@ float l2_avg_norm(float* v1, float* v2)
 
 double cpuSecond() 
 {
-   struct timeval tp;
-   gettimeofday(&tp,NULL);
-   return ((double)tp.tv_sec + (double)tp.tv_usec*1.e-6);
+  	struct timeval tp;
+   	gettimeofday(&tp,NULL);
+   	return ((double)tp.tv_sec + (double)tp.tv_usec*1.0e-6);
 }
